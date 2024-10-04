@@ -85,4 +85,5 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if can_process:
+		print(_conditions)
 		_states[_currentStateIndex].behave();
