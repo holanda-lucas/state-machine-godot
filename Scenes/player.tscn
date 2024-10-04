@@ -1,0 +1,89 @@
+[gd_scene load_steps=15 format=3 uid="uid://db67cs66prqtl"]
+
+[ext_resource type="Script" path="res://Scripts/player.gd" id="1_gyqys"]
+[ext_resource type="PackedScene" uid="uid://bi3exr6kanflh" path="res://Scenes/state_machine.tscn" id="1_o1w3s"]
+[ext_resource type="Script" path="res://Scripts/StatesTest/state_1.gd" id="2_eirpa"]
+[ext_resource type="Script" path="res://Scripts/StatesTest/state_2.gd" id="3_aks7r"]
+[ext_resource type="Script" path="res://Scripts/StatesTest/state_3.gd" id="4_h8gkt"]
+[ext_resource type="Texture2D" uid="uid://cxieklgh45d4y" path="res://Sprites/characters/player.png" id="5_e435o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ld2te"]
+atlas = ExtResource("5_e435o")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o8mrp"]
+atlas = ExtResource("5_e435o")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ukek1"]
+atlas = ExtResource("5_e435o")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yc08v"]
+atlas = ExtResource("5_e435o")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_msj2y"]
+atlas = ExtResource("5_e435o")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qmf7h"]
+atlas = ExtResource("5_e435o")
+region = Rect2(240, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g02tu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ld2te")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o8mrp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ukek1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yc08v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_msj2y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qmf7h")
+}],
+"loop": true,
+"name": &"Front",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k5rw0"]
+size = Vector2(11, 8)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_gyqys")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_g02tu")
+animation = &"Front"
+autoplay = "Front"
+frame_progress = 0.298569
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 13)
+shape = SubResource("RectangleShape2D_k5rw0")
+
+[node name="StateMachine" parent="." instance=ExtResource("1_o1w3s")]
+connection_string = Array[String](["a", "c"])
+
+[node name="A" type="Node" parent="StateMachine"]
+script = ExtResource("2_eirpa")
+change_conditions = Array[String](["var1"])
+
+[node name="B" type="Node" parent="StateMachine"]
+script = ExtResource("3_aks7r")
+change_conditions = Array[String](["var1", "var2"])
+
+[node name="C" type="Node" parent="StateMachine"]
+script = ExtResource("4_h8gkt")
+change_conditions = Array[String](["var3"])
