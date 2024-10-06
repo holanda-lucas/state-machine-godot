@@ -4,7 +4,7 @@
 extends Node
 class_name State
 
-@export var change_conditions: Array[String] 
+@export var transitions: Array[Transition] = []
 
 func behave() -> void:
 	pass
