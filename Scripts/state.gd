@@ -6,5 +6,11 @@ class_name State
 
 @export var transitions: Array[Transition] = []
 
-func behave() -> void:
+func enter() -> void:
+	pass
+
+func behave(_delta) -> void:
+	pass
+
+func exit() -> void:
 	pass

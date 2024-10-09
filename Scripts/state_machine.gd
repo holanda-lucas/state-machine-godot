@@ -24,6 +24,7 @@ func _init_states() -> void:
 				_conditions[condition] = false
 	
 	_currentState = get_child(0)
+	_currentState.enter()
 
 
 # Verifica possíveis trocas
@@ -34,12 +35,11 @@ func _init_states() -> void:
 func _check_state_change() -> State:
 	for transition in _currentState.transitions:
 		if check_conditions(transition):
-			print(transition.transition_to)
 			return _currentState.get_node(transition.transition_to) as State
 		
 	return null
 
-#erifica todas as condições estabelecidas pelo estado
+# Verifica todas as condições estabelecidas pelo estado
 func check_conditions(transition: Transition) -> bool:
 	for condition in transition.true_conditions:
 		if not _conditions[condition]:
@@ -57,7 +57,11 @@ func change_condition(key:String, value: bool) -> void:
 	_conditions[key] = value
 	var next_state := _check_state_change()
 	if (next_state != null):
+		_currentState.exit()
+		
 		_currentState = next_state
+		
+		_currentState.enter()
 
 
 # /////////////////////////////////////////////////////////////////////////////
@@ -71,4 +75,4 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if can_process:
 		print(_conditions)
-		_currentState.behave()
+		_currentState.behave(delta)
