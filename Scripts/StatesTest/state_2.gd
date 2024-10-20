@@ -1,6 +1,4 @@
-extends Node
+extends State
 
-@export var change_conditions: Array[String] 
-
-func behave() -> void:
+func behave(_delta) -> void:
 	print("Mensagem do estado 2")

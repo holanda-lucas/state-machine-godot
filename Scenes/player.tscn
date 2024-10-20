@@ -1,11 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://db67cs66prqtl"]
+[gd_scene load_steps=18 format=3 uid="uid://db67cs66prqtl"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_gyqys"]
 [ext_resource type="PackedScene" uid="uid://bi3exr6kanflh" path="res://Scenes/state_machine.tscn" id="1_o1w3s"]
-[ext_resource type="Script" path="res://Scripts/StatesTest/state_1.gd" id="2_eirpa"]
-[ext_resource type="Script" path="res://Scripts/StatesTest/state_2.gd" id="3_aks7r"]
-[ext_resource type="Script" path="res://Scripts/StatesTest/state_3.gd" id="4_h8gkt"]
+[ext_resource type="Script" path="res://Scripts/StatesTest/idle.gd" id="4_iuyfg"]
 [ext_resource type="Texture2D" uid="uid://cxieklgh45d4y" path="res://Sprites/characters/player.png" id="5_e435o"]
+[ext_resource type="Script" path="res://Scripts/StatesTest/movewasd.gd" id="5_rdxw0"]
+[ext_resource type="Script" path="res://Scripts/Transition.gd" id="6_ow2e1"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ld2te"]
 atlas = ExtResource("5_e435o")
@@ -60,6 +60,21 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_k5rw0"]
 size = Vector2(11, 8)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_ws3ny"]
+radius = 50.4876
+
+[sub_resource type="Resource" id="Resource_f766k"]
+script = ExtResource("6_ow2e1")
+transition_to = NodePath("../walk")
+true_conditions = Array[StringName]([&"is_moving"])
+false_conditions = Array[StringName]([])
+
+[sub_resource type="Resource" id="Resource_cubpi"]
+script = ExtResource("6_ow2e1")
+transition_to = NodePath("../idle")
+true_conditions = Array[StringName]([])
+false_conditions = Array[StringName]([&"is_moving"])
+
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_gyqys")
 
@@ -73,16 +88,23 @@ frame_progress = 0.298569
 position = Vector2(0.5, 13)
 shape = SubResource("RectangleShape2D_k5rw0")
 
+[node name="PerceptionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PerceptionArea"]
+position = Vector2(0, 8)
+shape = SubResource("CircleShape2D_ws3ny")
+
 [node name="StateMachine" parent="." instance=ExtResource("1_o1w3s")]
 
-[node name="A" type="Node" parent="StateMachine"]
-script = ExtResource("2_eirpa")
-change_conditions = Array[String](["var1"])
+[node name="idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("character")]
+script = ExtResource("4_iuyfg")
+character = NodePath("../..")
+transitions = Array[ExtResource("6_ow2e1")]([SubResource("Resource_f766k")])
 
-[node name="B" type="Node" parent="StateMachine"]
-script = ExtResource("3_aks7r")
-change_conditions = Array[String](["var1", "var2"])
+[node name="walk" type="Node" parent="StateMachine" node_paths=PackedStringArray("character")]
+script = ExtResource("5_rdxw0")
+character = NodePath("../..")
+transitions = Array[ExtResource("6_ow2e1")]([SubResource("Resource_cubpi")])
 
-[node name="C" type="Node" parent="StateMachine"]
-script = ExtResource("4_h8gkt")
-change_conditions = Array[String](["var3"])
+[connection signal="mouse_entered" from="PerceptionArea" to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="PerceptionArea" to="." method="_on_mouse_exited"]
